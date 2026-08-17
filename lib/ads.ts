@@ -12,11 +12,11 @@ export const AD_CLIENT = "ca-pub-9130836798889522";
 
 export const AD_SLOTS = {
   /** 어린이집(글지역) — 홈·목록 화면 */
-  home: "",
+  home: "4198615904",
   /** 어린이집(상단) — 본문 맨 위 */
-  top: "",
+  top: "3787552360",
   /** 어린이집(CTA) — 소개글·행동 버튼 다음 */
-  middle: "",
+  middle: "2885534232",
   /** 어린이집(h2) — 본문 중간 h2 아래, 목록 하단 */
-  bottom: "",
+  bottom: "4144298095",
 } as const;
