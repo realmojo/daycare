@@ -490,6 +490,15 @@ body {
 }
 
 /* ---- 글 상세: 제목 아래 메타 줄 ---- */
+/* h1 아래 한 줄 — 지역·유형·정원. h1 은 이름만 두는 편이 읽기 좋고,
+   구분에 필요한 값은 여기로 내린다. */
+.entry-subtitle {
+  margin: 6px 0 0;
+  font-size: 15px;
+  color: var(--c-text-sub);
+  word-break: keep-all;
+}
+
 .entry-header__bottom {
   display: flex;
   align-items: center;

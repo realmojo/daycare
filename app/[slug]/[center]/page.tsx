@@ -54,13 +54,38 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   // 지표가 없거나 운영 중이 아니면 보여줄 것이 없다. 색인시키지 않는다.
   if (center.per_staff === null || center.status !== "정상") {
     return {
-      title: `${center.name} | ${SITE.name}`,
+      title: `${center.name} - ${region.name} 어린이집 | ${SITE.name}`,
       robots: { index: false, follow: true },
     };
   }
 
-  const title = `${center.name} 정원 현원 교사 1인당 아동 수 | ${SITE.name}`;
-  const description = `${region.name} ${center.name}의 정원 ${center.capacity ?? "?"}명, 현원 ${center.enrolled ?? "?"}명, 교사 1인당 ${formatPerStaff(center.per_staff)}. ${center.kind ?? ""} 어린이집입니다.`;
+  // 사람들이 치는 말 그대로 — 이름이 먼저다. 거기에 지역과 유형을 붙여
+  // 같은 이름의 다른 어린이집과 갈리게 하고, 정원·현원으로 "○○어린이집 정원"
+  // 검색까지 받는다. 키워드를 늘어놓는 것보다 이 쪽이 클릭이 붙는다.
+  const bits = [
+    `${region.sigungu || region.sido}`,
+    center.kind ?? null,
+    center.capacity ? `정원 ${center.capacity}명` : null,
+    center.enrolled !== null ? `현원 ${center.enrolled}명` : null,
+  ].filter(Boolean);
+  const title = `${center.name} - ${bits.join(" · ")} | ${SITE.name}`;
+
+  const median = (await getAllRegionStats()).get(region.slug)?.median_per_staff ?? null;
+  const diff =
+    center.per_staff !== null && median
+      ? Math.round(((center.per_staff - median) / median) * 100)
+      : null;
+
+  const description = [
+    `${center.name}은 ${region.name}의 ${center.kind ?? ""} 어린이집으로 정원 ${center.capacity ?? "?"}명, 현원 ${center.enrolled ?? "?"}명입니다`,
+    center.capacity && center.enrolled !== null
+      ? ` (충원율 ${formatRate(center.enrolled, center.capacity)})`
+      : "",
+    `. 보육교직원 ${center.staff ?? "?"}명 기준 1인당 ${formatPerStaff(center.per_staff)}으로`,
+    diff !== null
+      ? ` ${region.name} 중간값보다 ${diff > 0 ? `${diff}% 많은` : diff < 0 ? `${-diff}% 적은` : "같은"} 수준입니다.`
+      : " 집계했습니다.",
+  ].join("");
 
   return {
     title,
@@ -73,7 +98,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     keywords: [
       center.name,
       `${center.name} 정원`,
+      `${center.name} 현원`,
       `${region.name} 어린이집`,
+      `${region.sigungu || region.sido} ${center.kind ?? ""} 어린이집`.trim(),
       center.kind ? `${center.kind} 어린이집` : "어린이집",
     ],
     openGraph: { title, description, type: "article" },
@@ -163,7 +190,17 @@ export default async function CenterPage({ params }: Props) {
           </nav>
 
           <header className="entry-header">
-            <h1 className="entry-title">{name} 정원·현원과 교사 1인당 아동 수</h1>
+            <h1 className="entry-title">{name}</h1>
+            <p className="entry-subtitle">
+              {[
+                region.name,
+                center.kind ? `${center.kind} 어린이집` : null,
+                center.capacity ? `정원 ${center.capacity}명` : null,
+                center.enrolled !== null ? `현원 ${center.enrolled}명` : null,
+              ]
+                .filter(Boolean)
+                .join(" · ")}
+            </p>
             <div className="entry-header__bottom">
               <div className="entry-meta">
                 <span>{SITE.name}</span>

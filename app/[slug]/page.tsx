@@ -70,12 +70,14 @@ async function regionMetadata(region: Region): Promise<Metadata> {
 
   return buildMetadata({
     path: `/${region.slug}`,
-    title: `${region.name} 어린이집 목록 — ${stats.center_count}곳 | ${SITE.name}`,
-    description: `${region.name} 어린이집 ${stats.center_count}곳을 교사 1인당 아동 수와 정원·현원으로 정리했습니다. 국공립·민간·가정을 한자리에서 견줘 보세요.`,
+    title: `${region.name} 어린이집 ${stats.center_count}곳 - 국공립·민간·가정 한눈에 | ${SITE.name}`,
+    description: `${region.name} 어린이집 ${stats.center_count}곳의 정원·현원과 교사 1인당 아동 수를 한 표에 정리했습니다. 교사 1인당 아동 수 중간값은 ${stats.median_per_staff ? `${Math.round(stats.median_per_staff * 10) / 10}명` : "-"}입니다. 국공립·민간·가정을 나란히 놓고 견줘 보세요.`,
     keywords: [
       `${region.name} 어린이집`,
       `${region.name} 국공립 어린이집`,
+      `${region.sigungu || region.sido} 어린이집 추천`,
       "어린이집 찾기",
+      "어린이집 정원 현원",
     ],
   });
 }
