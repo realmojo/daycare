@@ -12,7 +12,8 @@
     "cf:deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
     "cf:upload": "opennextjs-cloudflare build && wrangler versions upload",
     "cf:typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts",
-    "import:centers": "node scripts/import-centers.mjs"
+    "import:centers": "node scripts/import-centers.mjs",
+    "export:urls": "node scripts/export-urls.mjs"
   },
   "dependencies": {
     "@opennextjs/cloudflare": "^1.20.2",
